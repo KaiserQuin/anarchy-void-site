@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anarchy Void - Хаос без правил</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4a0e8a;
+            --accent-color: #ff00ff;
+            --bg-gradient: linear-gradient(135deg, #0a000d 0%, #1a001a 50%, #2a003a 100%);
+            --card-bg: rgba(74, 14, 138, 0.3);
+            --text-color: #ff00ff;
+            --gold: #ffd700;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: var(--bg-gradient);
+            font-family: 'Rajdhani', sans-serif;
+            color: var(--text-color);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><radialGradient id="a" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="%23ff00ff" stop-opacity="0.1"/><stop offset="100%" stop-color="%23000000" stop-opacity="0"/></radialGradient></defs><circle cx="20" cy="20" r="1" fill="url(%23a)"/><circle cx="80" cy="80" r="1" fill="url(%23a)"/><circle cx="50" cy="10" r="0.5" fill="url(%23a)"/><circle cx="10" cy="90" r="0.5" fill="url(%23a)"/></svg>') repeat;
+            animation: float 20s ease-in-out infinite;
+            z-index: -1;
+            opacity: 0.5;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        header {
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color), var(--primary-color));
+            padding: 30px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 50px rgba(255, 0, 255, 0.3);
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: scan 3s linear infinite;
+        }
+
+        @keyframes scan {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 3em;
+            font-weight: 700;
+            text-shadow: 0 0 20px var(--accent-color);
+            animation: glitch 2s infinite;
+            letter-spacing: 3px;
+        }
+
+        @keyframes glitch {
+            0%, 100% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+        }
+
+        .subtitle {
+            margin: 10px 0 0;
+            font-size: 1.3em;
+            font-weight: 300;
+            opacity: 0.8;
+        }
+
+        nav {
+            background: rgba(0,0,0,0.8);
+            padding: 15px 0;
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            flex-wrap: wrap;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--accent-color);
+        }
+
+        nav button {
+            background: transparent;
+            border: 1px solid var(--accent-color);
+            color: var(--text-color);
+            padding: 12px 24px;
+            font-family: inherit;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        nav button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--accent-color);
+            opacity: 0.2;
+            transition: left 0.3s;
+        }
+
+        nav button:hover::before {
+            left: 0;
+        }
+
+        nav button.active {
+            background: var(--accent-color);
+            color: #000;
+            box-shadow: 0 0 20px var(--accent-color);
+        }
+
+        nav button:hover {
+            transform: translateY(-2px);
+        }
+
+        main {
+            position: relative;
+            min-height: 70vh;
+            padding: 50px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        section {
+            display: none;
+            width: 100%;
+            max-width: 1000px;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .ranks-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 40px;
+            margin-bottom: 50px;
+        }
+
+        .rank-card {
+            background: var(--card-bg);
+            border: 1px solid var(--accent-color);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.5s ease;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+        }
+
+        .rank-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, var(--accent-color), transparent);
+            opacity: 0;
+            transition: opacity 0.5s;
+            animation: rotate 4s linear infinite paused;
+        }
+
+        .rank-card:hover::before {
+            opacity: 0.1;
+            animation-play-state: running;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .rank-card:hover {
+            transform: rotate(2deg) scale(1.05);
+            box-shadow: 0 20px 40px rgba(255, 0, 255, 0.3);
+        }
+
+        .rank-icon {
+            font-size: 4em;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 0 10px var(--accent-color));
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .rank-title {
+            font-size: 1.8em;
+            font-weight: 700;
+            margin: 15px 0;
+            letter-spacing: 1px;
+        }
+
+        .rank-desc {
+            font-size: 1em;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+
+        .rank-price {
+            font-size: 2.5em;
+            font-weight: 700;
+            color: var(--gold);
+            text-shadow: 0 0 10px var(--gold);
+            margin: 15px 0;
+        }
+
+        .buy-btn {
+            background: var(--accent-color);
+            border: none;
+            color: #000;
+            padding: 15px 30px;
+            font-family: inherit;
+            font-size: 1.1em;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255, 0, 255, 0.4);
+        }
+
+        .buy-btn:hover {
+            background: #cc00cc;
+            transform: scale(1.1);
+            box-shadow: 0 10px 25px rgba(255, 0, 255, 0.6);
+        }
+
+        .server-status {
+            background: rgba(0,255,0,0.2);
+            border: 2px solid #00ff00;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 0 auto 40px;
+            max-width: 350px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .server-status.offline {
+            background: rgba(255,0,0,0.2);
+            border-color: #ff0000;
+            color: #ff0000;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 10px;
+            animation: pulse-green 1.5s infinite;
+            box-shadow: 0 0 10px currentColor;
+        }
+
+        .status-indicator.offline {
+            background: #ff0000;
+            animation: pulse-red 1.5s infinite;
+        }
+
+        @keyframes pulse-green {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        @keyframes pulse-red {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(1.2); }
+        }
+
+        .widgets {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin: 40px auto;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .widget {
+            background: rgba(0,0,0,0.5);
+            border: 1px solid var(--accent-color);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s;
+            backdrop-filter: blur(10px);
+        }
+
+        .widget:hover {
+            transform: translateY(-5px);
+        }
+
+        .widget h3 {
+            margin: 0 0 15px;
+            font-weight: 500;
+        }
+
+        .news-ticker {
+            overflow: hidden;
+            white-space: nowrap;
+            font-size: 0.9em;
+        }
+
+        .news-ticker span {
+            display: inline-block;
+            animation: ticker 25s linear infinite;
+            padding-right: 100px;
+        }
+
+        @keyframes ticker {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        .clans-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .clan-card {
+            background: var(--card-bg);
+            border: 1px solid var(--accent-color);
+            padding: 20px;
+            border-radius: 10px;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .clan-card:hover {
+            transform: rotate(1deg) scale(1.02);
+            box-shadow: 0 10px 20px rgba(255, 0, 255, 0.2);
+        }
+
+        footer {
+            background: rgba(0,0,0,0.9);
+            text-align: center;
+            padding: 30px;
+            border-top: 2px solid var(--accent-color);
+            margin-top: 50px;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 15px;
+        }
+
+        .social-links a {
+            color: var(--accent-color);
+            font-size: 1.8em;
+            transition: all 0.3s;
+        }
+
+        .social-links a:hover {
+            color: var(--gold);
+            transform: scale(1.2);
+        }
+
+        .copyright {
+            opacity: 0.7;
+            font-size: 0.9em;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.2em; }
+            nav { gap: 15px; }
+            nav button { padding: 10px 18px; font-size: 0.9em; }
+            .ranks-container, .widgets, .clans-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Anarchy Void - Хаос без правил</h1>
+        <p class="subtitle">Войди в бездну, где правила — миф. Разрушай, доминируй, выживай.</p>
+    </header>
+
+    <nav>
+        <button onclick="switchTab('home')" class="active">Главная</button>
+        <button onclick="switchTab('clans')">Кланы</button>
+        <button onclick="switchTab('tools')">Гриф Инструменты</button>
+        <button onclick="switchTab('about')">О Нас</button>
+        <button onclick="switchTab('other')">Другие Серверы</button>
+        <button onclick="switchTab('corp')">Корпора</button>
+    </nav>
+
+    <main>
+        <section id="home" class="active">
+            <div class="server-status" id="serverStatus">
+                <div class="status-indicator" id="statusIndicator"></div>
+                <strong>Сервер онлайн</strong><br>
+                Игроков: <span id="onlineCount">1,247</span> | IP: anarchyvoid.net
+            </div>
+
+            <section class="ranks-container">
+                <div class="rank-card">
+                    <div class="rank-icon">🔴</div>
+                    <h2 class="rank-title">Бандит</h2>
+                    <p class="rank-desc">Доступ к базовому грифу и +30% фарм. Контроль хаоса на 3 дня. Начни разрушение.</p>
+                    <div class="rank-price">599 ₽</div>
+                    <button class="buy-btn" onclick="alert('Покупка Бандит!')">Купить</button>
+                </div>
+
+                <div class="rank-card">
+                    <div class="rank-icon">⚡</div>
+                    <h2 class="rank-title">Chaos Lord</h2>
+                    <p class="rank-desc">Полный доступ к ВРП, недвижимость и глобальный буст на 50 дней. Веди корпорацию.</p>
+                    <div class="rank-price">1299 ₽</div>
+                    <button class="buy-btn" onclick="alert('Покупка Chaos Lord!')">Купить</button>
+                </div>
+
+                <div class="rank-card">
+                    <div class="rank-icon">👑</div>
+                    <h2 class="rank-title">Anarchy King</h2>
+                    <p class="rank-desc">Абсолютная власть: перманентные привилегии и вершина иерархии. Правь или уничтожь.</p>
+                    <div class="rank-price">2999 ₽</div>
+                    <button class="buy-btn" onclick="alert('Покупка Anarchy King!')">Купить</button>
+                </div>
+            </section>
+
+            <section class="widgets">
+                <div class="widget">
+                    <h3>Новости</h3>
+                    <div class="news-ticker">
+                        <span>🎉 Апдейт 1.20: Новые зоны анархии! | 🔥 Топ-убийца: VoidSlayer | 💥 Гриф-ивент: 20 октября | ⚡ Скидки на ранги: -15% до конца месяца</span>
+                    </div>
+                </div>
+
+                <div class="widget">
+                    <h3>Онлайн</h3>
+                    <div style="font-size: 2.5em; font-weight: 700; color: var(--gold); animation: pulse 2s infinite;" id="onlineDisplay">1,247</div>
+                    <p>В хаосе сейчас</p>
+                </div>
+
+                <div class="widget">
+                    <h3>Топ Донатеры</h3>
+                    <ul style="list-style: none; padding: 0; text-align: left; font-size: 0.9em;">
+                        <li>1. VoidMaster - 5000₽ 👑</li>
+                        <li>2. ChaosReign - 4500₽</li>
+                        <li>3. AnarchistX - 3000₽</li>
+                        <li>4. DestroyAll - 2500₽</li>
+                    </ul>
+                </div>
+            </section>
+        </section>
+
+        <section id="clans">
+            <h2 style="text-align: center; margin-bottom: 30px; font-size: 2.5em;">Топ Кланы Анархии</h2>
+            <div class="clans-grid">
+                <div class="clan-card">
+                    <h3>Destroyers</h3>
+                    <p>Мастера грифа. 45 членов.</p>
+                    <button class="buy-btn" style="padding: 10px 20px; font-size: 0.9em;" onclick="alert('Вступление в Destroyers!')">Вступить</button>
+                </div>
+                <div class="clan-card">
+                    <h3>Anarchy Lords</h3>
+                    <p>Элита контроля. 32 члена.</p>
+                    <button class="buy-btn" style="padding: 10px 20px; font-size: 0.9em;" onclick="alert('Вступление в Anarchy Lords!')">Вступить</button>
+                </div>
+                <div class="clan-card">
+                    <h3>Rebels Void</h3>
+                    <p>Свободные воины. 28 членов.</p>
+                    <button class="buy-btn" style="padding: 10px 20px; font-size: 0.9em;" onclick="alert('Вступление в Rebels Void!')">Вступить</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="tools">
+            <h2 style="text-align: center; margin-bottom: 30px; font-size: 2.5em;">Инструменты Грифинга</h2>
+            <p style="text-align: center; max-width: 700px; margin: 0 auto 40px; line-height: 1.6; opacity: 0.9;">Гайды, моды и хаки для эпического разрушения: от TNT-ферм до супер-оружия.</p>
+            <div class="widgets">
+                <div class="widget">
+                    <h3>TNT Mega Farm</h3>
+                    <p>Построй свою бомбу: редстоун + диспенсеры. <button class="buy-btn" style="padding: 8px 16px; font-size: 0.8em;" onclick="alert('Гайд скачан!')">Скачать Гайд</button></p>
+                </div>
+                <div class="widget">
+                    <h3>Void Mod Pack</h3>
+                    <p>Моды для x3 скорость взрывов. <a href="#" style="color: var(--gold);">Установить</a></p>
+                </div>
+                <div class="widget">
+                    <h3>Hack Tools</h3>
+                    <p>Авто-фарм и анти-бан. <button class="buy-btn" style="padding: 8px 16px; font-size: 0.8em;" onclick="alert('Инструмент активирован!')">Активировать</button></p>
+                </div>
+            </div>
+        </section>
+
+        <section id="about">
+            <h2 style="text-align: center; margin-bottom: 30px; font-size: 2.5em;">О Нас</h2>
+            <p style="text-align: center; max-width: 700px; margin: 0 auto 40px; line-height: 1.6; font-size: 1.1em;">Anarchy Void — чистая анархия без границ. Запущен в 2025, мы собрали тысячи разрушителей. Нет правил, только хаос и власть. Вступай в войну миров.</p>
+            <div class="server-status" style="max-width: none; grid-template-columns: repeat(3, 1fr); display: grid; gap: 20px; text-align: center;">
+                <div><strong>50k+</strong><br>Общий онлайн</div>
+                <div><strong>10k</strong><br>Уникальных</div>
+                <div><strong>1M+</strong><br>Взрывов/день</div>
+            </div>
+        </section>
+
+        <section id="other">
+            <h2 style="text-align: center; margin-bottom: 30px; font-size: 2.5em;">Другие Анархии</h2>
+            <p style="text-align: center; margin-bottom: 40px; opacity: 0.9;">Найди союзников или цели на аналогичных серверах хаоса.</p>
+            <div class="widgets">
+                <div class="widget">
+                    <h3>ChaosWorld</h3>
+                    <p>IP: chaosworld.net<br>Фокус: PvP без границ</p>
+                </div>
+                <div class="widget">
+                    <h3>Anarchia Prime</h3>
+                    <p>IP: anarchia.gg<br>Полный гриф 24/7</p>
+                </div>
+                <div class="widget">
+                    <h3>Void Echo</h3>
+                    <p>IP: voidecho.com<br>Сиквел анархии</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="corp">
+            <h2 style="text-align: center; margin-bottom: 30px; font-size: 2.5em;">Корпора Анархии</h2>
+            <p style="text-align: center; max-width: 700px; margin: 0 auto 40px; line-height: 1.6; opacity: 0.9;">Объединись в корпорацию для тотального доминирования. Роли, миссии, базы — власть в твоих руках.</p>
+            <div class="clans-grid">
+                <div class="clan-card">
+                    <h3>HQ Corp</h3>
+                    <p>Центральная база. Роли: CEO, Enforcer.</p>
+                    <button class="buy-btn" style="padding: 10px 20px; font-size: 0.9em;" onclick="alert('Роль в HQ назначена!')">Занять Роль</button>
+                </div>
+                <div class="clan-card">
+                    <h3>Agents of Void</h3>
+                    <p>Шпионы и диверсанты. Ежедневные квесты.</p>
+                    <button class="buy-btn" style="padding: 10px 20px; font-size: 0.9em;" onclick="alert('Миссия принята!')">Принять Миссию</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="social-links">
+            <a href="#">💜 Discord</a>
+            <a href="#">📱 Telegram</a>
+            <a href="#">🇷🇺 VK</a>
+            <a href="#">🐦 X</a>
+            <a href="#">▶️ YouTube</a>
+        </div>
+        <p class="copyright">&copy; 2025 Anarchy Void. В бездне нет правил. Донать через Tebex/Divi.</p>
+    </footer>
+
+    <script>
+        function switchTab(tabName) {
+            document.querySelectorAll('section').forEach(sec => sec.classList.remove('active'));
+            document.querySelectorAll('nav button').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+
+            if (tabName === 'home') {
+                setTimeout(() => {
+                    const count = Math.floor(Math.random() * 600) + 900;
+                    document.getElementById('onlineCount').textContent = count.toLocaleString();
+                    document.getElementById('onlineDisplay').textContent = count.toLocaleString();
+                }, 600);
+            }
+        }
+
+        function updateServerStatus() {
+            const isOnline = Math.random() > 0.05;
+            const statusEl = document.getElementById('serverStatus');
+            const indicatorEl = document.getElementById('statusIndicator');
+
+            if (isOnline) {
+                statusEl.classList.remove('offline');
+                indicatorEl.classList.remove('offline');
+                statusEl.innerHTML = `
+                    <div class="status-indicator"></div>
+                    <strong>Онлайн</strong><br>
+                    Игроков: <span id="onlineCount">${Math.floor(Math.random() * 600) + 900}</span> | IP: anarchyvoid.net
+                `;
+            } else {
+                statusEl.classList.add('offline');
+                indicatorEl.classList.add('offline');
+                statusEl.innerHTML = `
+                    <div class="status-indicator offline"></div>
+                    <strong>Оффлайн</strong><br>
+                    Рестарт: ~5 мин | IP: anarchyvoid.net
+                `;
+            }
+        }
+
+        setInterval(updateServerStatus, 25000);
+        updateServerStatus();
+
+        console.log('Anarchy Void: Design reloaded - Dive into the void!');
+    </script>
+</body>
+</html>
